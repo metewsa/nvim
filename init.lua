@@ -977,7 +977,7 @@ require('lazy').setup({
   require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.neo-tree',
+  -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
@@ -1027,3 +1027,101 @@ vim.keymap.set('n', '<leader>sc', function()
     search_dirs = { vim.fn.expand '~/.config/hypr/config/' },
   }
 end, { desc = 'Search in Hypr config' })
+
+-- harpoon
+local harpoon = require 'harpoon'
+
+-- REQUIRED
+harpoon:setup()
+-- REQUIRED
+
+vim.keymap.set('n', '<leader>ha', function()
+  harpoon:list():add()
+end)
+-- vim.keymap.set('n', '<leader>hs', function()
+--   harpoon.ui:toggle_quick_menu(harpoon:list())
+-- end)
+-- Toggle previous & next buffers stored within Harpoon list
+vim.keymap.set('n', '<C-S-P>', function()
+  harpoon:list():prev()
+end)
+vim.keymap.set('n', '<C-S-N>', function()
+  harpoon:list():next()
+end)
+-- basic telescope configuration
+local conf = require('telescope.config').values
+local function toggle_telescope(harpoon_files)
+  local file_paths = {}
+  for _, item in ipairs(harpoon_files.items) do
+    table.insert(file_paths, item.value)
+  end
+
+  require('telescope.pickers')
+    .new({}, {
+      prompt_title = 'Harpoon',
+      finder = require('telescope.finders').new_table {
+        results = file_paths,
+      },
+      previewer = conf.file_previewer {},
+      sorter = conf.generic_sorter {},
+    })
+    :find()
+end
+
+vim.keymap.set('n', '<leader>hs', function()
+  toggle_telescope(harpoon:list())
+end, { desc = 'Open harpoon window' })
+
+vim.keymap.set('n', '<leader>hr', function()
+  require('harpoon'):list():remove()
+end, { desc = 'Remove file from Harpoon' })
+
+-- nvim-tree
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- optionally enable 24-bit colour
+vim.opt.termguicolors = true
+
+-- empty setup using defaults
+require('nvim-tree').setup()
+
+-- OR setup with some options
+require('nvim-tree').setup {
+  sort = {
+    sorter = 'case_sensitive',
+  },
+  view = {
+    width = 30,
+  },
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = true,
+  },
+}
+require 'nvim-tree'
+vim.keymap.set('n', '<leader>e', function()
+  vim.cmd 'NvimTreeToggle'
+end, { noremap = true, silent = true })
+
+require('luasnip.loaders.from_vscode').lazy_load()
+
+require('nvim-ts-autotag').setup {
+  opts = {
+    -- Defaults
+    enable_close = true, -- Auto close tags
+    enable_rename = true, -- Auto rename pairs of tags
+    enable_close_on_slash = false, -- Auto close on trailing </
+  },
+  -- Also override individual filetype configs, these take priority.
+  -- Empty by default, useful if one of the "opts" global settings
+  -- doesn't work well in a specific filetype
+  per_filetype = {
+    ['html'] = {
+      enable_close = false,
+    },
+  },
+}

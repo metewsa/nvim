@@ -41,7 +41,7 @@ return {
       vim.keymap.set('n', '<leader>od', '<cmd>Obsidian dailies<CR>', { desc = 'Obsidian Dailies' }),
       vim.keymap.set('n', '<leader>on', '<cmd>Obsidian new<CR>', { desc = 'Obsidian New Note' }),
       vim.keymap.set('n', '<leader>ob', '<cmd>Obsidian backlinks<CR>', { desc = 'Obsidian Backlinks' }),
-      vim.keymap.set('n', '<leader>oi', '<cmd>Obsidian pasteimg<CR>', { desc = 'Paste Image' }),
+      vim.keymap.set('n', '<leader>oi', '<cmd>Obsidian paste_img<CR>', { desc = 'Paste Image' }),
       vim.keymap.set('n', '<leader>ot', '<cmd>Obsidian tags<CR>', { desc = 'Obsidian Tags' }),
     },
   },
@@ -111,5 +111,29 @@ return {
       { '<c-l>', '<cmd><C-U>TmuxNavigateRight<cr>' },
       { '<c-\\>', '<cmd><C-U>TmuxNavigatePrevious<cr>' },
     },
+  },
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
+  },
+  {
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
+    lazy = false,
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require('nvim-tree').setup {}
+    end,
+  },
+  { 'rafamadriz/friendly-snippets' },
+  {
+    'windwp/nvim-ts-autotag',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    config = function()
+      require('nvim-ts-autotag').setup()
+    end,
   },
 }
