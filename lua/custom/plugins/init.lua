@@ -136,4 +136,7 @@ return {
       require('nvim-ts-autotag').setup()
     end,
   },
+  {
+    'simrat39/rust-tools.nvim',
+  },
 }
